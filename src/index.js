@@ -1,17 +1,36 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import './index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
+import ReactDOM from 'react-dom';
+import { useEffect, useState } from "react";
+function Userdemo() {
+    const [users, setUser] = useState([]);
+    const [loading, setloading] = useState(true);
+    useEffect(() => {
+        fetch('https://jsonplaceholder.typicode.com/users')
+            .then(response => response.json())
+            .then(data => {
+                setUser(data);
+                setloading(false);
+            })
+            .catch(error => {
+                console.error("if it is not loading,will be error message");
+                setloading(false);
+            });
+    }, []);
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
-root.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>
-);
+    if (loading) {
+        return <h1>loading</h1>
+    }
+    return (
+        <div>
+            <h1>
+                List out the users in API
+            </h1>
+            <ul>
+                {users.map(user => (
+                    <li key={user.id}>{user.name}</li>
+                ))}
+            </ul>
+        </div>
+    );
+}
+ReactDOM.render(<Userdemo />, document.getElementById('root'));
 
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();
